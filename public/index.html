@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Code Dependency Mermaid</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="shell">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">STATIC CODE ANALYZER</p>
+        <h1>Code Dependency Mermaid</h1>
+        <p class="lede">Drop in a JavaScript or Python source file, inspect its imports and function-to-function calls, then generate a Mermaid dependency diagram.</p>
+      </div>
+      <div class="badge">Browser-only</div>
+    </header>
+
+    <section class="panel controls" aria-labelledby="input-heading">
+      <div class="section-heading">
+        <div>
+          <h2 id="input-heading">1. Load source</h2>
+          <p>The language is always selected explicitly; it is never inferred from the file extension.</p>
+        </div>
+      </div>
+
+      <div class="toolbar language-toolbar" role="group" aria-label="Source language">
+        <label class="radio-pill">
+          <input type="radio" name="language" value="javascript" checked />
+          <span>JavaScript</span>
+        </label>
+        <label class="radio-pill">
+          <input type="radio" name="language" value="python" />
+          <span>Python</span>
+        </label>
+      </div>
+
+      <label id="drop-zone" class="drop-zone" for="file-input">
+        <input id="file-input" type="file" accept=".js,.mjs,.cjs,.py,text/javascript,text/x-python" hidden />
+        <span class="drop-icon">⇩</span>
+        <strong>Drop a source file here</strong>
+        <span>or click to choose a file</span>
+        <small id="file-name">No file loaded</small>
+      </label>
+
+      <div class="toolbar options-toolbar">
+        <label class="check"><input id="show-imports" type="checkbox" checked /> Include imports/packages</label>
+        <label class="check"><input id="show-external" type="checkbox" checked /> Show unresolved/external calls</label>
+        <label class="check"><input id="show-returns" type="checkbox" checked /> Include inferred outputs</label>
+        <label class="field compact-field">Direction
+          <select id="direction">
+            <option value="LR" selected>Left → Right</option>
+            <option value="TD">Top → Down</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="toolbar action-toolbar">
+        <button id="analyze-btn" class="primary" type="button" disabled>Analyze file</button>
+        <button id="clear-btn" type="button">Clear</button>
+        <button id="load-demo-btn" type="button">Load demo</button>
+      </div>
+    </section>
+
+    <section class="panel metrics-panel" aria-labelledby="summary-heading">
+      <div class="section-heading inline-heading">
+        <div>
+          <h2 id="summary-heading">2. Analysis summary</h2>
+          <p>Counts are updated after successful parsing.</p>
+        </div>
+      </div>
+      <div class="metrics">
+        <div class="metric"><span id="function-count">0</span><small>Functions</small></div>
+        <div class="metric"><span id="import-count">0</span><small>Imports</small></div>
+        <div class="metric"><span id="call-count">0</span><small>Calls</small></div>
+        <div class="metric"><span id="external-count">0</span><small>External calls</small></div>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="mermaid-heading">
+      <div class="section-heading split-heading">
+        <div>
+          <h2 id="mermaid-heading">3. Mermaid source</h2>
+          <p>Edit the generated Mermaid if you want to refine the graph manually.</p>
+        </div>
+        <div class="toolbar mini-toolbar">
+          <button id="copy-btn" type="button" disabled>Copy</button>
+          <button id="download-mmd-btn" type="button" disabled>Download .mmd</button>
+          <button id="render-btn" type="button" disabled>Render edited text</button>
+        </div>
+      </div>
+      <textarea id="mermaid-source" spellcheck="false" aria-label="Mermaid diagram source" placeholder="Generated Mermaid code will appear here."></textarea>
+    </section>
+
+    <section class="panel" aria-labelledby="diagram-heading">
+      <div class="section-heading split-heading">
+        <div>
+          <h2 id="diagram-heading">4. Rendered diagram</h2>
+          <p>Solid arrows represent calls. Dashed arrows represent import or package dependencies.</p>
+        </div>
+        <div class="toolbar mini-toolbar">
+          <button id="download-svg-btn" type="button" disabled>Download SVG</button>
+          <button id="fit-btn" type="button" disabled>Fit diagram</button>
+        </div>
+      </div>
+      <div id="diagram-wrap" class="diagram-wrap">
+        <div id="diagram-empty" class="empty-state">Analyze a file to render its dependency graph.</div>
+        <div id="diagram" class="diagram" aria-live="polite"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer id="status-bar" class="status-bar" data-level="idle">
+    <span class="status-dot"></span>
+    <span id="status-text">Ready. Choose JavaScript or Python, then load a file.</span>
+  </footer>
+
+  <!-- Vendor these locally for a fully self-contained static deployment. -->
+  <script src="vendor/mermaid.min.js"></script>
+  <script src="vendor/acorn.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
